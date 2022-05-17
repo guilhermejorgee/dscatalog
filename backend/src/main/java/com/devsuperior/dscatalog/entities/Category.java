@@ -1,5 +1,6 @@
 package com.devsuperior.dscatalog.entities;
 
+import com.devsuperior.dscatalog.dto.CategoryDTO;
 import lombok.*;
 import org.hibernate.Hibernate;
 
@@ -31,5 +32,9 @@ public class Category {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public void update(CategoryDTO dto) {
+        this.name = dto.getName();
     }
 }
