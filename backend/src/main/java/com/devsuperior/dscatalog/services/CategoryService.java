@@ -3,6 +3,8 @@ package com.devsuperior.dscatalog.services;
 import com.devsuperior.dscatalog.dto.CategoryDTO;
 import com.devsuperior.dscatalog.entities.Category;
 import com.devsuperior.dscatalog.repositories.CategoryRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,8 +23,8 @@ public class CategoryService {
     }
 
     @Transactional(readOnly = true)
-    public List<CategoryDTO> findAll() {
-        return repository.findAll().stream().map(CategoryDTO::new).collect(Collectors.toList());
+    public Page<CategoryDTO> findAllPaged(PageRequest pageRequest) {
+        return repository.findAll(pageRequest).map(CategoryDTO::new);
     }
 
     @Transactional(readOnly = true)
@@ -36,8 +38,12 @@ public class CategoryService {
     }
 
     public CategoryDTO update(Long id, CategoryDTO dto) {
-        Category entity = repository.getById(id);
+        Category entity = repository.getReferenceById(id);
         entity.update(dto);
         return new CategoryDTO(repository.save(entity));
+    }
+
+    public void delete(Long id) {
+        repository.deleteById(id);
     }
 }

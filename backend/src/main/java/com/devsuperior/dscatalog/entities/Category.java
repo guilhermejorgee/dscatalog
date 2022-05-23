@@ -5,13 +5,13 @@ import lombok.*;
 import org.hibernate.Hibernate;
 
 import javax.persistence.*;
+import java.time.Instant;
 import java.util.Objects;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
 @Entity
 @Table(name = "TB_CATEGORY")
 public class Category {
@@ -20,6 +20,17 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
+    @Setter(AccessLevel.NONE)
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant createdAt;
+    @Setter(AccessLevel.NONE)
+    @Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+    private Instant updateAt;
+
+    @Builder
+    public Category(String name){
+        this.name = name;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -32,6 +43,16 @@ public class Category {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @PrePersist
+    public void prePersist(){
+        createdAt = Instant.now();
+    }
+
+    @PreUpdate
+    public void preUpdate(){
+        updateAt = Instant.now();
     }
 
     public void update(CategoryDTO dto) {
